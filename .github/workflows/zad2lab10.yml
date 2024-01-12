@@ -43,12 +43,12 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
+          git config user.email "dominika.skolimowska@pollub.edu.pl"
+          git config user.name "skolimowskad"
 
       - name: Modify Kubernetes Manifests
         run: |
-          sed -i 's|image: skolimowskad/zad2gitops:.*|image: skolimowskad/zad2gitops:'"$(date +'%Y%m%d%H%M%S')"'|' ./deployment.yaml
+          sed -i 's/image: skolimowskad/zad2gitops:.*|image: skolimowskad/zad2gitops:'"$(date +'%Y%m%d%H%M%S')"'|' ./deployment.yaml
           git add deployment.yaml
           git commit -m "Update image reference"
-          git push origin master
+          git push origin main
