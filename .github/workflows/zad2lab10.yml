@@ -22,7 +22,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v2
@@ -48,7 +48,7 @@ jobs:
 
       - name: Modify Kubernetes Manifests
         run: |
-          sed -i 's/image: skolimowskad/zad2gitops:.*|image: skolimowskad/zad2gitops:'"$(date +'%Y%m%d%H%M%S')"'|' ./deployment.yaml
-          git add deployment.yaml
+          sed -i 's|image: skolimowskad/zad2gitops:.*|image: skolimowskad/zad2gitops:'"$(date +'%Y%m%d%H%M%S')"'|' ./config-repo/deployment.yaml
+          git add config-repo/deployment.yaml
           git commit -m "Update image reference"
           git push origin main
