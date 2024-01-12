@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@latest
+        uses: actions/checkout@v2
         with:
           token: ${{ secrets.TOKEN }}
 
@@ -44,7 +44,7 @@ jobs:
     needs: dockerCI
     steps:
       - name: Checkout Config repo
-        uses: actions/checkout@latest
+        uses: actions/checkout@v2
         with:
           repository: skolimowskad/config-repo
           token: ${{ secrets.TOKEN }}
