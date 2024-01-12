@@ -12,7 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@latest
+        with:
+          token: ${{ secrets.TOKEN }}
 
       - name: Install Qemu
         uses: docker/setup-qemu-action@v2
@@ -42,10 +44,10 @@ jobs:
     needs: dockerCI
     steps:
       - name: Checkout Config repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@latest
         with:
           repository: skolimowskad/config-repo
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.TOKEN }}
 
       - name: Configure access to Config repo
         run: |
