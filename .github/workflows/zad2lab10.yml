@@ -43,7 +43,8 @@ jobs:
     steps:
       - name: Checkout Config repo
         uses: actions/checkout@v2
-        repository: skolimowskad/config-repo
+        with:
+          repository: skolimowskad/config-repo
 
       - name: Configure access to Config repo
         run: |
