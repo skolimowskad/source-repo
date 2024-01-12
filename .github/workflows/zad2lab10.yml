@@ -29,7 +29,6 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and Push Docker image
-        id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -54,13 +53,7 @@ jobs:
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
-
-          # Check if there are changes
-          if git diff-index --quiet HEAD --; then
-            echo "No changes to commit."
-          else
-            sed -i 's|image: skolimowskad/zad2gitops:.*|image: skolimowskad/zad2gitops:${{ github.run_number }}|' deployment.yaml
-            git add deployment.yaml
-            git commit -m "Update Docker image version"
-            git push origin main
-          fi
+          sed -i 's|image: skolimowskad/zad2gitops:.*|image: skolimowskad/zad2gitops:${{ github.run_number }}|' deployment.yaml
+          git add deployment.yaml
+          git commit -m "Update Docker image version"
+          git push origin main
