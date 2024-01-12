@@ -51,9 +51,13 @@ jobs:
         with:
           token: ${{ secrets.TOKEN }}
 
-      - name: Set up GitHub CLI
-        uses: actions/setup-gh@v0.5.0
-
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt update
+          sudo apt install gh
+          
       - name: Create Release
         run: |
           gh release create v${{ github.run_number }} -t "Release v${{ github.run_number }}"
