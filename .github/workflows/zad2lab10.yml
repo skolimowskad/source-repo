@@ -28,15 +28,16 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Set application version
-        run: echo "APP_VERSION=2" >> $GITHUB_ENV
-
       - name: Build and Push Docker image
-        run: |
-          docker buildx build --platform linux/amd64,linux/arm64 -t skolimowskad/zad2gitops:${{ github.run_number }} .
-          docker buildx build --platform linux/amd64,linux/arm64 -t skolimowskad/zad2gitops:latest .
-          docker push skolimowskad/zad2gitops:${{ github.run_number }}
-          docker push skolimowskad/zad2gitops:latest
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            skolimowskad/zad2gitops:${{ github.run_number }}
+            skolimowskad/zad2gitops:latest
 
   kubernetesCI:
     runs-on: ubuntu-latest
@@ -50,12 +51,16 @@ jobs:
 
       - name: Configure access to Config repo
         run: |
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-          sed -i "s|image: skolimowskad/zad2gitops:.*|image: skolimowskad/zad2gitops:${{ env.APP_VERSION }}|" deployment.yaml
-          git add deployment.yaml
-          git commit -m "Update Docker image version"
+          gh config set prompt disabled
+          gh auth login --with-token ${{ secrets.GITHUB_TOKEN }}
+          gh repo view --json name --template '{{.Name}}' > repo_name.txt
+          REPO_NAME=$(cat repo_name.txt)
+          gh pr comment ${{ github.event.inputs.version }} -b "Aktualizacja numeru wersji w pliku index.html"
+          gh pr merge ${{ github.event.inputs.version }} -m "Merge PR: Aktualizacja numeru wersji w pliku index.html"
+          git fetch origin
+          git checkout -B main origin/main
+          git pull origin main
+          sed -i 's|Numer Wersji: .*|Numer Wersji: ${{ github.run_number }}|' index.html
+          git add index.html
+          git commit -m "Update version number in index.html"
           git push origin main
-
-      - name: Create Release
-        run: gh release create v${{ env.APP_VERSION }} -t "Release v${{ env.APP_VERSION }}" -n "Release v${{ env.APP_VERSION }}"
