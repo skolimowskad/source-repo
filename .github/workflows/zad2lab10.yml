@@ -50,6 +50,8 @@ jobs:
           token: ${{ secrets.TOKEN }}
 
       - name: Configure access to Config repo
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN }}
         run: |
           gh pr comment ${{ github.event.inputs.version }} -b "Aktualizacja numeru wersji w pliku index.html"
           gh pr merge ${{ github.event.inputs.version }} -m "Merge PR: Aktualizacja numeru wersji w pliku index.html"
