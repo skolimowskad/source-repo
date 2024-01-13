@@ -58,10 +58,17 @@ jobs:
           git commit -m "Update Docker image version"
           git push origin main
 
-      - name: Update version in index.html
+      - name: Set up GitHub CLI
+        uses: actions/setup-gh@v1
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Get version from GitHub Actions
         run: |
           version=$(gh run view ${{ github.run_id }} --json version --jq '.version')
-          sed -i "s|<p>Numer Wersji: .*|<p>Numer Wersji: $version</p>|" index.html
-          git add index.html
-          git commit -m "Update version in index.html"
-          git push origin main
+          echo "::set-output name=version::$version"
+        id: set_version
+
+      - name: Display version
+        run: |
+          echo "Version: ${{ steps.set_version.outputs.version }}"
