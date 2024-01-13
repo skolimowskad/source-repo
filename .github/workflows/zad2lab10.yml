@@ -49,6 +49,9 @@ jobs:
           repository: skolimowskad/config-repo
           token: ${{ secrets.TOKEN }}
 
+      - name: Pull latest changes
+        run: git pull origin main
+
       - name: Configure access to Config repo
         env:
           GH_TOKEN: ${{ secrets.TOKEN }}
@@ -56,9 +59,6 @@ jobs:
           pr_number=$(gh pr list | grep "Aktualizacja numeru wersji w pliku index.html" | awk '{print $1}')
           gh pr comment $pr_number -b "Aktualizacja numeru wersji w pliku index.html"
           gh pr merge $pr_number -m "Merge PR: Aktualizacja numeru wersji w pliku index.html"
-          git fetch origin
-          git checkout -B main origin/main
-          git pull origin main
           sed -i "s|Numer Wersji: .*|Numer Wersji: ${{ github.event.inputs.version }}|g" index.html
           git add index.html
           git commit -m "Update version number in index.html"
