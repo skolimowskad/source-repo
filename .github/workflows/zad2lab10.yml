@@ -57,3 +57,11 @@ jobs:
           git add deployment.yaml
           git commit -m "Update Docker image version"
           git push origin main
+
+      - name: Update version in index.html
+        run: |
+          version=$(gh run view ${{ github.run_id }} --json version --jq '.version')
+          sed -i "s|<p>Numer Wersji: .*|<p>Numer Wersji: $version</p>|" index.html
+          git add index.html
+          git commit -m "Update version in index.html"
+          git push origin main
