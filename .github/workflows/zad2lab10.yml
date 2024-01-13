@@ -51,10 +51,6 @@ jobs:
 
       - name: Configure access to Config repo
         run: |
-          gh config set prompt disabled
-          gh auth login --with-token ${{ secrets.GITHUB_TOKEN }}
-          gh repo view --json name --template '{{.Name}}' > repo_name.txt
-          REPO_NAME=$(cat repo_name.txt)
           gh pr comment ${{ github.event.inputs.version }} -b "Aktualizacja numeru wersji w pliku index.html"
           gh pr merge ${{ github.event.inputs.version }} -m "Merge PR: Aktualizacja numeru wersji w pliku index.html"
           git fetch origin
