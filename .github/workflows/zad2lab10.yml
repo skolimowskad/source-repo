@@ -36,7 +36,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            skolimowskad/zad2gitops:${{ github.run_number }}
+            skolimowskad/zad2gitops:${{ github.event.inputs.version }}
             skolimowskad/zad2gitops:latest
 
   kubernetesCI:
@@ -53,12 +53,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.TOKEN }}
         run: |
-          gh pr comment ${{ github.event.inputs.version }} -b "Aktualizacja numeru wersji w pliku index.html"
-          gh pr merge ${{ github.event.inputs.version }} -m "Merge PR: Aktualizacja numeru wersji w pliku index.html"
+          pr_number=$(gh pr list | grep "Aktualizacja numeru wersji w pliku index.html" | awk '{print $1}')
+          gh pr comment $pr_number -b "Aktualizacja numeru wersji w pliku index.html"
+          gh pr merge $pr_number -m "Merge PR: Aktualizacja numeru wersji w pliku index.html"
           git fetch origin
           git checkout -B main origin/main
           git pull origin main
-          sed -i 's|Numer Wersji: .*|Numer Wersji: ${{ github.run_number }}|' index.html
+          sed -i 's|Numer Wersji: .*|Numer Wersji: ${{ github.event.inputs.version }}|' index.html
           git add index.html
           git commit -m "Update version number in index.html"
           git push origin main
