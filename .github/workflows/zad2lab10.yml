@@ -58,10 +58,12 @@ jobs:
           git commit -m "Update Docker image version"
           git push origin main
 
-      - name: Set up GitHub CLI
-        uses: actions/setup-gh@v1
-        with:
-          token: ${{ secrets.GH_TOKEN }}
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt-get update
+          sudo apt-get install gh
 
       - name: Get version from GitHub Actions
         run: |
