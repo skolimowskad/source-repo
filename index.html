@@ -7,6 +7,20 @@
 </head>
 <body>
     <p>Imię i Nazwisko: Dominika Skolimowska</p>
-    <p>Numer Wersji: 2</span></p>
+    <p>Numer Wersji: <span id="appVersion"></span></p>
+
+    <script>
+        // Skrypt do pobrania numeru wersji z GitHub Actions
+        fetch('https://api.github.com/repos/NazwaTwojegoUzytkownika/NazwaTwojegoRepo/actions/runs/${{ github.run_id }}')
+            .then(response => response.json())
+            .then(data => {
+                const version = data.workflow_runs[0].head_commit.message.includes('Wersja aplikacji') ? data.workflow_runs[0].workflow_run_id : 'Brak dostępnej wersji';
+                document.getElementById('appVersion').textContent = version;
+            })
+            .catch(error => {
+                console.error('Błąd podczas pobierania numeru wersji:', error);
+                document.getElementById('appVersion').textContent = 'Błąd podczas pobierania numeru wersji';
+            });
+    </script>
 </body>
 </html>
