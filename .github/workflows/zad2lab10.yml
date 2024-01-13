@@ -50,19 +50,9 @@ jobs:
           token: ${{ secrets.TOKEN }}
 
       - name: Configure access to Config repo
-        env:
-          GH_TOKEN: ${{ secrets.TOKEN }}
         run: |
-          pr_number=$(gh pr list | grep "Aktualizacja numeru wersji w pliku index.html" | awk '{print $1}')
-
-          if [ -z "$pr_number" ]; then
-            # Jeśli nie ma otwartego PR, utwórz go
-            gh pr create --title "Aktualizacja numeru wersji w pliku index.html" --body "Automatyczna aktualizacja numeru wersji" --base main
-            pr_number=$(gh pr list | grep "Aktualizacja numeru wersji w pliku index.html" | awk '{print $1}')
-          fi
-
-          gh pr comment $pr_number -b "Aktualizacja numeru wersji w pliku index.html"
-          gh pr merge $pr_number -m "Merge PR: Aktualizacja numeru wersji w pliku index.html"
+          gh pr comment ${{ github.event.inputs.version }} -b "Aktualizacja numeru wersji w pliku index.html"
+          gh pr merge ${{ github.event.inputs.version }} -m "Merge PR: Aktualizacja numeru wersji w pliku index.html"
           git fetch origin
           git checkout -B main origin/main
           git pull origin main
